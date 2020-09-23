@@ -11,11 +11,7 @@ public class Main {
         int minV = 65;
         int maxV = 70;
 
-        try{
-            ValidateSortList();
-        } catch(Exception e){
-            System.out.println("Error validating sorting algorithms: " + e.getMessage());
-        }
+        ValidateSortList();
 
         try{
 
@@ -41,6 +37,7 @@ public class Main {
         System.out.println();
 
     }
+
     public static byte[][] GenerateTestList(int N, int k, int minV, int maxV){
 
         if (minV < 1 || maxV > 255) throw new IllegalArgumentException("GenerateTestList: bad min/max range");
@@ -73,16 +70,21 @@ public class Main {
         int minV = 65;
         int maxV = 70;
 
-        byte[][] randomList = new byte[N][];
-        byte[][] insertionList = new byte[N][];
+        byte[][] randomList;
+        byte[][] insertionList;
+        byte[][] mergeList;
         randomList = GenerateTestList(N, k, minV, maxV);
         insertionList = randomList;
+        mergeList = randomList;
 
         System.out.print("Unsorted: ");
         PrintList(randomList, N, k);
         InsertionSort(insertionList, k);
         System.out.print("Insertn : ");
         PrintList(insertionList, N, k);
+        System.out.print("Merged  : ");
+        MergeSort(mergeList, k);
+        PrintList(mergeList, N, k);
 
 
     }
@@ -109,6 +111,57 @@ public class Main {
            // increment arrayNumber
            arrayNumber++;
         }
+    }
+
+    static byte[][] MergeSort(byte[][] list, int k){
+
+        int size = list.length;
+
+        // One or less is sorted by definition
+        if (size <= 1) return list;
+
+        // Create new arrays
+        int split = (int) Math.ceil(size/2.0); // get proper size for odd N, 2.0 cause int arithmetic apparently...
+        byte[][] left = new byte[split][];
+        byte[][] right = new byte[size/2][];
+
+        // Split list
+        int l = 0;
+        int r = 0;
+        for (int i = 0; i < size; i++){
+            if (i < split) left[l++] = list[i];
+            else right[r++] = list[i];
+        }
+
+        // Recursive calls
+        left = MergeSort(left, k);
+        right = MergeSort(right, k);
+
+        // Merge sorted lists
+        return mergeArrays(left, right, k);
+
+        // Psuedocode from https://en.wikipedia.org/wiki/Merge_sort
+    }
+
+    static byte[][] mergeArrays(byte[][] left, byte[][] right, int k){
+
+        int l = 0, r = 0, m = 0;
+        int lsize = left.length;
+        int rsize = right.length;
+        byte[][] mergedList = new byte[lsize + rsize][];
+
+        // iterate through list until either list is complete
+        while (l < lsize && r < rsize){
+            // determine order to fill mergedList
+            if (needsSwapped(right[r], left[l])) mergedList[m++] = left[l++];
+            else mergedList[m++] = right[r++];
+        }
+
+        // Handle remainder for odd N lists
+        while (l < lsize) mergedList[m++] = left[l++];
+        while (r < rsize) mergedList[m++] = right[r++];
+
+        return mergedList;
     }
 
     static boolean needsSwapped(byte[] previousList, byte[] currentList){
