@@ -73,19 +73,27 @@ public class Main {
         byte[][] randomList;
         byte[][] insertionList;
         byte[][] mergeList;
+        byte[][] quickList;
+
         randomList = GenerateTestList(N, k, minV, maxV);
         insertionList = randomList;
         mergeList = randomList;
+        quickList = randomList;
 
         System.out.print("Unsorted: ");
         PrintList(randomList, N, k);
+
         InsertionSort(insertionList, k);
         System.out.print("Insertn : ");
         PrintList(insertionList, N, k);
+
         System.out.print("Merged  : ");
         MergeSort(mergeList, k);
         PrintList(mergeList, N, k);
 
+        System.out.print("Quicksrt: ");
+        QuickSort(quickList, 0, N-1);
+        PrintList(mergeList, N, k);
 
     }
 
@@ -164,6 +172,46 @@ public class Main {
         return mergedList;
     }
 
+    static void QuickSort(byte[][] list, int lo, int hi){
+        if (lo < hi){
+            int p = partition(list, lo, hi);
+            QuickSort(list, lo, p-1);
+            QuickSort(list, p+1, hi);
+        }
+    }
+
+    static int partition(byte[][] list, int lo, int hi){
+        int i = lo;
+        byte[] pivot = list[hi];
+
+        for (int j = lo; j < hi; j++){
+            if (isLessThan(list[j], pivot)){
+                swap(list, i, j);
+                i++;
+            }
+            swap(list, i, hi);
+        }
+
+        return i;
+    }
+
+    static void swap(byte[][] list, int a, int b){
+        byte[] temp = list[a];
+        list[a] = list[b];
+        list[b] = temp;
+    }
+
+    static boolean isLessThan(byte[] previousList, byte[] currentList){
+        if (previousList == currentList) return false;
+        int i = -1;
+        // return immediately if out of order, otherwise increment through array
+        do {
+            i++;
+            if (previousList[i] < currentList[i]) return true;
+        } while (i < previousList.length && previousList[i] == currentList[i]);
+
+        return false;
+    }
     static boolean needsSwapped(byte[] previousList, byte[] currentList){
         int i = -1;
         // return immediately if out of order, otherwise increment through array
