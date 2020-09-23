@@ -12,6 +12,12 @@ public class Main {
         int maxV = 70;
 
         try{
+            ValidateSortList();
+        } catch(Exception e){
+            System.out.println("Error validating sorting algorithms: " + e.getMessage());
+        }
+
+        try{
 
             byte[][] randomList = new byte[N][];
             randomList = GenerateTestList(N, k, minV, maxV);
@@ -28,10 +34,11 @@ public class Main {
 
         for (int i = 0; i < N; i++){
             for (int j = 0; j < k; j++){
-                System.out.print((char)list[i][j]);
+                System.out.print((char)list[i][j] );
             }
-            System.out.println();
+            System.out.print(" ");
         }
+        System.out.println();
 
     }
     public static byte[][] GenerateTestList(int N, int k, int minV, int maxV){
@@ -58,6 +65,26 @@ public class Main {
         }
 
         return newList;
+    }
+
+    static void ValidateSortList(){
+        int N = 10;
+        int k = 4;
+        int minV = 65;
+        int maxV = 70;
+
+        byte[][] randomList = new byte[N][];
+        byte[][] insertionList = new byte[N][];
+        randomList = GenerateTestList(N, k, minV, maxV);
+        insertionList = randomList;
+
+        System.out.print("Unsorted: ");
+        PrintList(randomList, N, k);
+        InsertionSort(insertionList, k);
+        System.out.print("Insertn : ");
+        PrintList(insertionList, N, k);
+
+
     }
 
     static void InsertionSort(byte[][] list, int k){
