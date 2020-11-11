@@ -74,11 +74,13 @@ public class Main {
         byte[][] insertionList;
         byte[][] mergeList;
         byte[][] quickList;
+        byte[][] radixList;
 
         randomList = GenerateTestList(N, k, minV, maxV);
         insertionList = randomList;
         mergeList = randomList;
         quickList = randomList;
+        radixList = randomList;
 
         System.out.print("Unsorted: ");
         PrintList(randomList, N, k);
@@ -94,6 +96,12 @@ public class Main {
         System.out.print("Quicksrt: ");
         QuickSort(quickList, 0, N-1);
         PrintList(mergeList, N, k);
+
+/*
+        System.out.print("Radixsrt: ");
+        RadixSort(radixList, N, 1, k);
+        PrintList(mergeList, N, k);
+*/
 
     }
 
@@ -176,15 +184,15 @@ public class Main {
         if (lo < hi){
             int p = partition(list, lo, hi);
             QuickSort(list, lo, p-1);
-            QuickSort(list, p+1, hi);
+            QuickSort(list, p, hi);
         }
     }
 
     static int partition(byte[][] list, int lo, int hi){
-        int i = lo;
         byte[] pivot = list[hi];
+        int i = lo;
 
-        for (int j = lo; j < hi; j++){
+        for (int j = lo; j <= hi; j++){
             if (isLessThan(list[j], pivot)){
                 swap(list, i, j);
                 i++;
@@ -212,6 +220,37 @@ public class Main {
 
         return false;
     }
+
+    static void RadixSort(byte[][] list, int N, int d, int k){
+        // Mostly from Creel video.
+
+        byte[][] newList = new byte[N][];
+        int counterSize = (int) Math.pow(256.0, d);
+        int[] counter = new int[counterSize];
+
+        for (int shift = 0, s = 0; shift < k; shift++, s++){
+
+            for (int i = 0; i < counterSize; i++){
+                counter[i] = 0;
+            }
+
+            for (int j = 0; j < N; j++){
+                counter[(int)list[j][s]]++;
+            }
+
+            for (int p = 1; p < 256; p++){
+                counter[p] += counter[p-1];
+            }
+
+            for (int b = N-1; b >= 0; b--){
+                int index = list[b][s];
+                newList[--counter[index]] = list[b];
+            }
+
+            list = newList;
+        }
+    }
+
     static boolean needsSwapped(byte[] previousList, byte[] currentList){
         int i = -1;
         // return immediately if out of order, otherwise increment through array
