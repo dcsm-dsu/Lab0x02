@@ -97,11 +97,9 @@ public class Main {
         QuickSort(quickList, 0, N-1);
         PrintList(mergeList, N, k);
 
-/*
         System.out.print("Radixsrt: ");
         RadixSort(radixList, N, 1, k);
         PrintList(mergeList, N, k);
-*/
 
     }
 
@@ -228,14 +226,15 @@ public class Main {
         int counterSize = (int) Math.pow(256.0, d);
         int[] counter = new int[counterSize];
 
-        for (int shift = 0, s = 0; shift < k; shift++, s++){
+
+        for (int shift = 0, s = 3; shift < k; shift++, s--){
 
             for (int i = 0; i < counterSize; i++){
                 counter[i] = 0;
             }
 
             for (int j = 0; j < N; j++){
-                counter[(int)list[j][s]]++;
+                counter[list[j][s]]++;
             }
 
             for (int p = 1; p < 256; p++){
@@ -247,7 +246,9 @@ public class Main {
                 newList[--counter[index]] = list[b];
             }
 
+            byte[][] tmp = list;
             list = newList;
+            newList = tmp;
         }
     }
 
