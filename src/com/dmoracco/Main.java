@@ -52,8 +52,8 @@ public class Main {
             // Generate random byte array
             newArray = new byte[k+1];
             for (int j = 0; j < k; j++){
-                randomByte = (byte) (r.nextInt(maxV-minV) + minV+1);
-                newArray[j] = (byte) randomByte;
+                randomByte = (byte)(Math.abs(r.nextInt(maxV-minV) + minV));
+                newArray[j] = randomByte;
             }
             // terminate array
             newArray[k] = 0;
@@ -82,6 +82,7 @@ public class Main {
         quickList = randomList;
         radixList = randomList;
 
+        System.out.printf("\nSHORT LIST VALIDATION:\n\n");
         System.out.print("Unsorted: ");
         PrintList(randomList, N, k);
 
@@ -100,6 +101,61 @@ public class Main {
         System.out.print("Radixsrt: ");
         RadixSort(radixList, N, 1, k);
         PrintList(mergeList, N, k);
+
+        k = k*4;
+        N = 10000;
+        minV = 1;
+        maxV = 255;
+
+        randomList = GenerateTestList(10000, k, minV, maxV);
+        quickList = randomList;
+        mergeList = randomList;
+        insertionList = randomList;
+        radixList = randomList;
+
+        boolean[] testresults = new boolean[4];
+        for (int z = 0; z < 4; z++){
+            testresults[z] = true;
+        }
+
+        System.out.printf("\nLARGE SORT VALIDATION:\n");
+
+        InsertionSort(insertionList, k);
+        MergeSort(mergeList, k);
+        QuickSort(quickList, 0, N-1);
+        RadixSort(radixList, N, 1, k);
+
+        for (int t = 1; t < N; t++){
+            if (testresults[0] == true && !isLessThan(insertionList[t-1], insertionList[t])){
+               //System.out.println("FAILED AT " + t);
+               testresults[0] = false;
+            }
+        }
+
+        System.out.print("Insertn : ");
+        if (testresults[0] == true){
+            System.out.println("GOOD");
+        } else {
+            System.out.println("FAIL");
+        }
+        System.out.print("Merged  : ");
+        if (testresults[1] == true){
+            System.out.println("GOOD");
+        } else {
+            System.out.println("FAIL");
+        }
+        System.out.print("Quicksrt: ");
+        if (testresults[2] == true){
+            System.out.println("GOOD");
+        } else {
+            System.out.println("FAIL");
+        }
+        System.out.print("Radixsrt: ");
+        if (testresults[3] == true){
+            System.out.println("GOOD");
+        } else {
+            System.out.println("FAIL");
+        }
 
     }
 
@@ -234,7 +290,8 @@ public class Main {
             }
 
             for (int j = 0; j < N; j++){
-                counter[list[j][s]]++;
+                //+128 ugly hack to handle negative integer interpretation of byte
+                counter[(list[j][s])+128]++;
             }
 
             for (int p = 1; p < 256; p++){
@@ -242,7 +299,8 @@ public class Main {
             }
 
             for (int b = N-1; b >= 0; b--){
-                int index = list[b][s];
+                //+128 ugly hack to handle negative integer interpretation of byte
+                int index = (list[b][s])+128;
                 newList[--counter[index]] = list[b];
             }
 
