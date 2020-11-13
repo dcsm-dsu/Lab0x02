@@ -227,7 +227,7 @@ public class Main {
         int[] counter = new int[counterSize];
 
 
-        for (int shift = 0, s = 3; shift < k; shift++, s--){
+        for (int shift = 0, s = k-1; shift < k; shift++, s--){
 
             for (int i = 0; i < counterSize; i++){
                 counter[i] = 0;
